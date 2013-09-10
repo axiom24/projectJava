@@ -1,3 +1,5 @@
-public class PersonalDetails {
+public class PersonalDetails 
+{
 	public String name,address;
+	
 }

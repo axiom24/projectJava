@@ -1,4 +1,5 @@
-public class CheckingAccount extends BankAccount{
+public class CheckingAccount extends BankAccount
+{
 	private static final int FREE_TRANSACTIONS = 3;
 	private static final double TRANSACTION_FEES = 2.0;
 	private int transactionCount = 0;
