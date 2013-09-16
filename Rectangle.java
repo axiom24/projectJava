@@ -2,8 +2,6 @@
  * It has three constructors which can which be intialized in three diff ways.
  * One takes four arguments,the other no arguments and the third three arguments
  * @author Sarwar
- * 
- * 
  */
 public class Rectangle {
 	
