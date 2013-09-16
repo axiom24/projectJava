@@ -1,4 +1,4 @@
-/**Class rectangle has coordinates ,width and height of a rectangle.
+/**Class Rectangle has coordinates ,width and height of a rectangle.
  * It has three constructors which can which be intialized in three diff ways.
  * One takes four arguments,the other no arguments and the third three arguments
  * @author Sarwar
