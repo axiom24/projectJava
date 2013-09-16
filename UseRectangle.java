@@ -1,3 +1,6 @@
+/**
+Test class
+*/
 
 public class UseRectangle {
 
