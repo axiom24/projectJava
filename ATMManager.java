@@ -1,6 +1,6 @@
 /**
  * This class uses BankAccount class to implement ATM management for an account
- * @author 
+ * @author livingstore
  *
  */
 public class ATMManager {
