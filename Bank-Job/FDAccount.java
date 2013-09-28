@@ -1,63 +1,58 @@
 
-public class FDAccount extends BankAccount
-{
-	private int time;
-	private int transactionCount = 0;
+public class FDAccount extends BankAccount implements java.io.Serializable
+{	static final long serialVersionUID = 0;
+	private int invest_Time;
 	private double rate;
-	public FDAccount(double BalanceInit, String name, String address,int time)
+	private int count;
+	private double interest_Final;
+	FDAccount(int time,double initial,String name,String address,String password)
 	{
-		super(BalanceInit,name,address);
-		this.time=time;
-		if(this.time<=12)
-		{
-			this.rate=6.0;
-		}
-		else if(this.time>12 && this.time<=36)
-		{
-			this.rate=7.0;
-		}
+		super(initial,name, address,password);
+		invest_Time = time;
+		if(invest_Time<=12)
+			rate = 6.0;
+		else if(12<invest_Time && invest_Time<=36)
+			rate = 7.0;
 		else
+			rate = 8.0;
+		count = 0;
+	}
+	public void deposit(double amount)
+	{
+		if(count<1)
 		{
-			this.rate=8.0;
-		}
-	
-	}
-	public double getRate()
-	{
-		return this.rate;
-	}
-	public double getBalance()
-	{
-		return super.getBalance();
-	}
-	public void deposit(double amountIn)
-	{	if(this.transactionCount<1)
-		{
-			transactionCount++;
-			super.deposit(amountIn);
-		}
-		else
-			System.out.println("You cannot deposit more than one time");
-	}
-	public void withdraw(double amountOut)
-	{
-		System.out.println("Withdrawal not allowed");
-	}
-	public void transfer(BankAccount deductory, double amount)
-	{
-		if(this.transactionCount<1)
-		{
-			transactionCount++;
-			deductory.withdraw(amount);
 			super.deposit(amount);
-					
+			fdInterest();
+			System.out.println("Rate:"+rate+"\nInterest:"+interest_Final);
+			++count;
 		}
 		else
-			System.out.println("You cannot transfer more than one time");
-		
-			
+			System.out.println("Transaction closed");
+	}
+	public void transfer(BankAccount b,double amount)
+	{
+		if(count<1)
+		{
+			if(b.withdraw(amount))
+			{
+		       super.deposit(amount);
+			   fdInterest();
+			   System.out.println("Rate:"+rate+"\nInterest:"+interest_Final);
+			   count+=1;
+			}
+		}
+		else
+			System.out.println("Transaction closed");
+	}
+	public boolean withdraw(double amt)
+	{
+		System.out.println("Cannot withdraw from the account");
+		return false;
+	}
+	public void fdInterest()
+	{
+		interest_Final = getBalance()*(Math.pow(1+(rate/1200),invest_Time));
 	}
 	
 
 }
-

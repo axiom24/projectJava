@@ -1,97 +1,83 @@
-/**
- * This class creates a bank account and provides methods like deposit, withdraw,
- * getBalance and transfer
- * It automatically generates a sequential new account no for every object of the
- * class starting from 180020131111
- * @author Sarwar Chahal
- */
-public class BankAccount {
+
+public abstract class BankAccount implements ITRules,Comparable,java.io.Serializable
+{	static final long serialVersionUID = 0;
 	private double balance;
-	private static long accNoIndex=180020131111L;
-	private long accountNo;
-	private int noOfTransactions=0;
-	private double minimumBalance = 500;
-	LastTransaction last = new LastTransaction();
-	PersonalDetails personal = new PersonalDetails();
-
-	public BankAccount(double initialBalance, String name, String address){
-		if (initialBalance>=500){
-			this.accountNo = accNoIndex;
-			accNoIndex++;
-			this.balance = initialBalance;
-			personal.name = name;
-			personal.address = address;
-		}
-		else{
-			System.out.println("Insufficient amount to start a new account. At least 500 is required!");
-		}
+	private String accountNumber;
+	private int no_Of_Transactions;
+	private static double min_Balance = 500.00;
+	private static String starting_No = "180020131111";
+	private PersonalDetails account_Holder;
+	private LastTransaction transaction_Details;
+	private Verifier myVerifier;
+	BankAccount(double initial,String name,String address,String password)
+	{
+		balance = initial;
+		no_Of_Transactions = 0;
+		long n = Long.parseLong(starting_No);
+		accountNumber = String.valueOf(n);
+		++n;
+		starting_No = String.valueOf(n);
+		account_Holder = new PersonalDetails(name,address);
+		transaction_Details = new LastTransaction("Deposit");
+		myVerifier = new Verifier(password);
 	}
-
-	/**
-	 * This method takes amount as a parameter and increases the balance of the account
-	 * by amount
-	 * It does not return anything
-	 * @param amount
-	 */
-	public void deposit(double amount){
-		this.balance += amount;
-		this.noOfTransactions++;
-		last.typeOfTransaction = "Deposit";
+	public void deposit(double amount)
+	{
+		balance+=amount;
+		no_Of_Transactions++;
 	}
-
-	/**
-	 * This method takes amount as a parameter and decreases the balance of the account
-	 * by amount
-	 * It does not return anything
-	 * This method takes care of the minimum balance which should be present in the account 
-	 * @param amount
-	 */
-	public void withdraw(double amount){
-		if(this.balance-amount>=this.minimumBalance){
-			this.balance -= amount;
-			last.typeOfTransaction = "Withdraw";
+	public boolean withdraw(double amount)
+	{
+		if(balance-amount>=min_Balance)
+		{
+			balance-=amount;
+			no_Of_Transactions++;
+			return true;
 		}
-		else{
-			System.out.println("Insufficient balance!");
+		else
+			return false;
+	}
+	public void transfer(BankAccount account,double amount)
+	{
+		if(account.withdraw(amount))
+		{
+			deposit(amount);
+			no_Of_Transactions++;
+			System.out.println("Transfer was successful");
 		}
-		this.noOfTransactions++;
+		else
+			System.out.println("Unable to transfer due to insufficient funds");
 	}
-
-	/**
-	 * This method returns the current balance present in the account
-	 * @return
-	 */
-	public double getBalance(){
-		this.noOfTransactions++;
-		return this.balance;
+	public String toString()
+	{
+		return "Account Details:"+account_Holder.toString()+"\n"+transaction_Details.toString()+"\nAccount Balance:"+balance;
 	}
-
-	/**
-	 * This method takes another account and amount as parameters and transfers
-	 * money from current account to the passed(beneficiary) account
-	 * This method also accounts for the noOfTransactions because it uses
-	 * withdraw and deposit methods of the objects
-	 * @param beneficiary
-	 * @param amount
-	 */
-	public void transfer(BankAccount beneficiary, double amount){
-		if(this.balance - amount >=this.minimumBalance){
-			this.withdraw(amount);
-			beneficiary.deposit(amount);
-			last.typeOfTransaction = "Transfer";
-		}
+	public double getBalance()
+	{
+		return balance;
 	}
-
-	/**
-	 * This method prints the details of the account such as account no, name,
-	 * current balance, address and type of last transaction
-	 */
-	public String toString(){
-		System.out.println("Account Number: "+this.accountNo);
-		System.out.println("Current Balance: "+this.getBalance());
-		System.out.println("Name: "+personal.name);
-		System.out.println("Address: "+personal.address);
-		System.out.println("Last Transaction: "+last.typeOfTransaction);
-		return "";
+	public double calculateTax(double amt)
+	{
+		if(amt>10000&&amt<=30000)
+		  return amt*rate1;
+		else if(amt>30000&&amt<=75000)
+			return amt*rate2;
+		else if(amt>75000&&amt<=100000)
+			return amt*rate3;
+		else if(amt>100000)
+			return amt*rate4;
+		else
+			return 0;
+	}
+	public boolean compareTo(Object someObject)
+	{
+		if(myVerifier.verifyPasssword(someObject))
+			return true;
+		else
+			return false;
+	}
+	public String getAccountNumber()
+	{
+		return accountNumber;
 	}
 }

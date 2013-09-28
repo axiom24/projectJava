@@ -1,34 +1,39 @@
-public class CheckingAccount extends BankAccount
-{
-	private static final int FREE_TRANSACTIONS = 3;
-	private static final double TRANSACTION_FEES = 2.0;
-	private int transactionCount = 0;
-	
-	public CheckingAccount(double BalanceInit, String name, String address)
+
+public class CheckingAccount extends BankAccount implements java.io.Serializable 
+{	static final long serialVersionUID = 0;
+	private int transactionCount;
+	private double fee;
+	private static int max_free_Transactions = 2;
+	private static double fee_per_Transaction = 2.0;
+	CheckingAccount(double initial,String name,String address,String password)
 	{
-		super(BalanceInit,name,address);
+		super(initial,name,address,password);
+		transactionCount=0;
 	}
-	
-	public double getBalance(){
-			return super.getBalance();
-	}
-	public void deposit(double amountIn)
+	public void deposit(double amount)
 	{
-		transactionCount++;
-		super.deposit(amountIn);
+		super.deposit(amount);
+		++transactionCount;
 	}
-	public void withdraw(double amountOut)
+	public boolean withdraw(double amt)
 	{
-		transactionCount++;
-		super.withdraw(amountOut);
-	}
-	public void deductFees()
-	{
-		if(transactionCount > FREE_TRANSACTIONS)
+		if(super.withdraw(amt))
 		{
-			double fees = TRANSACTION_FEES * (transactionCount - FREE_TRANSACTIONS);
-			super.withdraw(fees);
+			++transactionCount;
+			return true;
 		}
-		transactionCount = 0;
+		return false;
+	}
+	public void deductFee()
+	{
+		if(transactionCount> max_free_Transactions)
+		{
+			fee = (transactionCount-max_free_Transactions)*fee_per_Transaction;
+			transactionCount = 0;
+		}
+	}
+	public String toString()
+	{
+		return super.toString()+"\nTransaction fee:"+fee;
 	}
 }
